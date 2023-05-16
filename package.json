@@ -1,6 +1,6 @@
 {
   "name": "vue-json-table",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "convert json to table format package",
   "author": "zhouhl",
   "keywords": [
@@ -12,9 +12,9 @@
   "module": "./dist/vue-json-table.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/zhl5317/vue-json-table.git"
+    "url": ""
   },
-  "homepage": "https://github.com/zhl5317/vue-json-table",
+  "homepage": "",
   "license": "MIT",
   "scripts": {
     "dev": "webpack-dev-server --open --config webpack.config.js --port=3001",

@@ -6,7 +6,7 @@
 
 # 样例
 
-![Alt text](./public/table.png)
+![Alt text](./public/table.gif)
 
 # 开始
 

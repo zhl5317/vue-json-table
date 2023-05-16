@@ -76,7 +76,7 @@ export default {
                   "height:" +
                   (rect.height - 4) +
                   "px;" +
-                  "z-index:1000;" +
+                  "z-index:9999;" +
                   "text-align:center";
                 document.body.appendChild(input);
               };
@@ -307,3 +307,9 @@ export default {
   },
 };
 </script>
+
+<style>
+.htContextMenu:not(.htGhostTable) {
+  z-index: 9999 !important;
+}
+</style>

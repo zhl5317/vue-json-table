@@ -1,5 +1,5 @@
 <template>
-  <div style="width: 100%; display: block">
+  <div style="width: 100%; margin: 0 auto">
     <VueJsonTable
     :jsonData="[...data]"
     v-model="data"
@@ -28,14 +28,14 @@ export default {
   data() {
     return {
       data: [
-          { name: "张三111", age: 12, tel: "15370001322", address: "苏州市企查查科技有限公司234444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444", country: "中国" },
-          { name: "李四", age: 11, tel: "15370001322", address: "苏州市企查查科技有限公司", country: "中国"},
-          { name: "王二", age: 23, tel: "15370001322", address: "苏州市企查查科技有限公司", country: "中国" },
-          { name: "赵五", age: 45, tel: "15370001322", address: "苏州市企查查科技有限公司", country: "中国" },
-          { name: "钱六", age: 23, tel: "15370001322", address: "苏州市企查查科技有限公司", country: "中国" }],
+          { name: "张三", age: 12, tel: "15370001322", address: "企查查科技有限公司", country: "中国" },
+          { name: "李四", age: 11, tel: "15370001322", address: "小米科技有限公司", country: "中国"},
+          { name: "王二", age: 23, tel: "15370001322", address: "阿里科技有限公司", country: "中国" },
+          { name: "赵五", age: 45, tel: "15370001322", address: "百度科技有限公司", country: "中国" },
+          { name: "钱六", age: 23, tel: "15370001322", address: "腾讯科技有限公司", country: "中国" }],
       width: "100%",
       height: "auto",
-      colWidths: 100,
+      colWidths: 150,
       fixColumnIndex: 0,
       stretchH: 'none',
       multiColumnSorting: false,
@@ -52,9 +52,6 @@ export default {
         console.log(val);
       },
     },
-  },
-  created(){
-
   },
   methods: {
     addColumn(){},

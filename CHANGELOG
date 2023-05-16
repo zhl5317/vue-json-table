@@ -1,3 +1,4 @@
 V1.0.0  json 数组类型数据转成表格实时在线编辑插件
 V1.0.1  readme添加样例截图
 V1.0.2  支持showTitle, className配置
+V1.0.3  设置htContextMenu 层级最高
