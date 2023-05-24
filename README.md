@@ -69,15 +69,20 @@ Vue.use(VueJsonTable)
   | manualColumnResize|    否   | Boolean|  true |  是否允许手动调整列宽   |
   | className|    否   | String|  "" |  自定义cell样式   |
   | showTitle|    否   | Boolean|  false |  是否显示cell title   |
+  | highlights|    否   | Array|  [] |  高亮列头   |
+  | repeatHighlightsCell|    否   | Array|  [] |  高亮列重复值   |
+  | cellClickFlag|    否   | Boolean|  false |  是否启动单元格点击回调   |
+  
 
 
 
 # 事件说明
-  |  名称    | 说明  | 返回参数 |
-  |  ----   | ----  | ----  |
-  |  removeColumn   | 删除列  | 返回删除得列名  |
-  |  updateColumn   | 更新列名  | 返回更新前，后 列名  |
-  |  addColumn   | 新增列  | 返回新增得列明  |
+  |  名称           | 说明      | 返回参数                                 |
+  |  ----           | ----      | ----                                    |
+  |  removeColumn   | 删除列     | 返回删除得列名                           |
+  |  updateColumn   | 更新列名   | 返回更新前，后 列名                       |
+  |  addColumn      | 新增列     | 返回新增得列明                           |
+  |  cellClick      |单元格点击  |返回单元格索引（row， col）位置以及单元格内容|
 
 
 

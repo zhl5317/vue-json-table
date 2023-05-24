@@ -7,7 +7,6 @@ import { HotTable } from "@handsontable/vue";
 import { registerAllModules } from "handsontable/registry";
 import { registerLanguageDictionary, zhCN } from "handsontable/i18n";
 import "handsontable/dist/handsontable.full.css";
-
 registerAllModules();
 registerLanguageDictionary(zhCN);
 export default {
@@ -17,17 +16,20 @@ export default {
       obj: {
         data: [],
         colHeaders: [],
-        rowHeaders: false,
+        rowHeaders: true,
         width: "",
         height: "",
         colWidths: [],
-        autoColumnSize: {syncLimit: 1},
+        autoColumnSize: {syncLimit: '20%'},
         stretchH: 'all',
         columns: [],
+        highlights:[],
         fixedColumnsStart: 0,
         headerTooltips: true,
         customBorders: true,
+        autoWarpRow: true,
         allowInsertColumn: true,
+        showEmptyRows: true,
         dropdownMenu: false,
         className: "",
         afterOnCellMouseDown: (event, coords, th) => {
@@ -93,9 +95,21 @@ export default {
               );
             });
           }
+          if (coords.row > -1 && coords.col > -1  && this.cellClickFlag ) {
+            this.cellClick(coords.row , coords.col, th.innerHTML);
+            // let instance = this.$refs.hotTableComponent.hotInstance
+            // let header = instance.getColHeader(coords.col, coords.row)
+            // if (this.obj.highlights.includes(header)) {
+            //   this.cellClick(coords.row , coords.col, th.innerHTML);
+            // }
+          }
         },
-        afterGetColHeader: function (index, TH) {
+        afterGetColHeader: (index, TH) => {
+          let name= TH.querySelector("span").textContent
           TH.setAttribute("title", TH.querySelector("span").textContent);
+          if(this.obj.highlights.includes(name)) {
+            TH.style.background = "lightgreen";
+          }
         },
         multiColumnSorting: true,
         contextMenu: {
@@ -150,12 +164,13 @@ export default {
         licenseKey: "non-commercial-and-evaluation",
         language: zhCN.languageCode,
         manualColumnFreeze: true, //手动固定列
-        manualColumnMove: false, //手动移动列
+        manualColumnMove: true, //手动移动列
         manualRowMove: false, //手动移动行
-        manualColumnResize: false, //手工更改列距
+        manualColumnResize: true, //手工更改列距
         manualRowResize: true, //手动更改行距
         comments: false, //添加注释
       },
+      duplicatesDict: {}
     };
   },
   components: {
@@ -165,12 +180,7 @@ export default {
     jsonData: {
       type: Array,
       require: true,
-      default: () => [
-          { name: "张三111", age: 12, tel: "15370001322", address: "苏州市企查查科技有限公司", country: "中国" },
-          { name: "李四", age: 11, tel: "15370001322", address: "苏州市企查查科技有限公司", country: "中国"},
-          { name: "王二", age: 23, tel: "15370001322", address: "苏州市企查查科技有限公司", country: "中国" },
-          { name: "赵五", age: 45, tel: "15370001322", address: "苏州市企查查科技有限公司", country: "中国" },
-          { name: "钱六", age: 23, tel: "15370001322", address: "苏州市企查查科技有限公司", country: "中国" }],
+      default: () => [],
     },
     width: {
       type: String,
@@ -185,12 +195,12 @@ export default {
     colWidths: {
       type: [Array,String,Number],
       require: false,
-      default: () => 100,
+      default: () => 120,
     },
     showRowsNum: {
       type: Boolean,
       require: false,
-      default: () => false,
+      default: () => true,
     },
     fixColumnIndex: {
       type: Number,
@@ -221,40 +231,109 @@ export default {
       type: Boolean,
       require: false,
       default: () => false,
+    },
+    highlights: {
+      type: Array,
+      require: false,
+      default: () => [],
+    },
+    repeatHighlightsCell: {
+      type: Array,
+      require: false,
+      default: () => [],
+    },
+    cellClickFlag: {
+      type: Boolean,
+      require: false,
+      default: () => false,
     }
   },
   created(){
     this.obj.data = this.jsonData
-    if (this.showTitle) {
-      this.obj.columns = this.jsonData? this.jsonData && Object.keys(this.jsonData[0]).map(v=> {
-        return { "data": v,  renderer: this.renderTitleTooltips}
-      }): []
-    } else {
-      this.obj.columns = this.jsonData? this.jsonData && Object.keys(this.jsonData[0]).map(v=> {
-        return { "data": v}
-      }): []
-    }
-    this.obj.colHeaders = this.jsonData? this.jsonData && Object.keys(this.jsonData[0]): []
-    this.obj.width = this.width
-    this.obj.height = this.height
-    this.obj.stretchH = this.stretchH
-    this.obj.manualColumnResize = this.manualColumnResize
-    this.obj.multiColumnSorting = this.multiColumnSorting
-    this.obj.colWidths = this.colWidths
-    this.obj.rowHeaders = this.showRowsNum
-    this.obj.fixedColumnsStart = this.fixColumnIndex
-    this.obj.className = this.className
+    this.initSetting(this.obj.data)
+  },
+  mounted(){
   },
   watch: {
     "obj.data": {
       handler(newValue, oldValue) {
         this.$emit("input", newValue)
+        if(this.repeatHighlightsCell) {
+          this.duplicatesDict = this.findDuplicates(newValue, this.repeatHighlightsCell)
+          this.updateBg()
+        }
       },
       deep: true,
-      immediate: true,
+      immediate: false,
     }
   },
   methods: {
+    cellClick(row, col, text){
+      this.$emit("cellClick", row, col, text)
+    },
+    updateBg(){
+      let hot = this.$refs.hotTableComponent.hotInstance
+      hot.updateSettings({
+        cells:(row, col, prop)=>{
+          if (this.repeatHighlightsCell && this.repeatHighlightsCell.includes(prop)) {
+            let cell = hot.getCell(row, col)
+            if (this.duplicatesDict[prop].includes(cell.innerHTML)) {
+              this.$nextTick(()=>{
+                  cell.style.background = 'rgb(242,223,224)'
+              })
+            }
+          }
+        }
+      })
+    },
+    findDuplicates(arr, key) {
+      const dup_dict = {}
+      for(let k of key) {
+        const map = new Map();
+        const duplicates = [];
+        for (let i = 0; i < arr.length; i++) {
+          const item = arr[i];
+          if (!map.has(item[k])) {
+            map.set(item[k], [item]);
+          } else {
+            const values = map.get(item[k]);
+            values.push(item);
+            if (values.length === 2) {
+              duplicates.push(values[0][k]);
+            }
+          }
+        }
+        dup_dict[k] =duplicates
+      }
+      return dup_dict;
+    },
+    initSetting(propData) {
+      if (this.showTitle) {
+        this.obj.columns = propData.length>0? propData && Object.keys(propData[0]).map(v=> {
+          return { "data": v,  renderer: this.renderTitleTooltips}
+        }): []
+      } else {
+        this.obj.columns = propData.length>0? propData && Object.keys(propData[0]).map(v=> {
+          return { "data": v}
+        }): []
+      }
+      this.obj.colHeaders = propData.length>0? propData && Object.keys(propData[0]): []
+      this.obj.width = this.width
+      this.obj.height = this.height
+      this.obj.stretchH = this.stretchH
+      this.obj.manualColumnResize = this.manualColumnResize
+      this.obj.multiColumnSorting = this.multiColumnSorting
+      this.obj.colWidths = this.colWidths
+      this.obj.rowHeaders = this.showRowsNum
+      this.obj.fixedColumnsStart = this.fixColumnIndex
+      this.obj.className = this.className
+      this.obj.highlights = this.highlights
+    },
+    manualRender (newData) {
+      this.obj.data = newData
+      this.initSetting(this.obj.data)
+      this.$refs.hotTableComponent.hotInstance.loadData(this.obj.data);
+    },
     renderTitleTooltips(instance, td, row, col, prop, value, cellProperties){
       td.innerHTML = value;
       td.title = value;
@@ -309,7 +388,9 @@ export default {
 </script>
 
 <style>
+
 .htContextMenu:not(.htGhostTable) {
   z-index: 9999 !important;
 }
+
 </style>

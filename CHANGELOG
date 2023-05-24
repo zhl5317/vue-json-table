@@ -2,3 +2,6 @@ V1.0.0  json 数组类型数据转成表格实时在线编辑插件
 V1.0.1  readme添加样例截图
 V1.0.2  支持showTitle, className配置
 V1.0.3  设置htContextMenu 层级最高
+v1.0.4  增加手动触发表格刷新方法
+v1.0.5  支持渲染空数组，支持 highlights，repeatHighlightsCell， cellClickFlag， @cellClick API
+v1.0.6  update readme
