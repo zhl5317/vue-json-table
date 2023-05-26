@@ -111,6 +111,9 @@ export default {
             TH.style.background = "lightgreen";
           }
         },
+        afterScrollHorizontally:()=> {
+          this.updateBg()
+        },
         multiColumnSorting: true,
         contextMenu: {
           items: {
@@ -274,12 +277,15 @@ export default {
     updateBg(){
       let hot = this.$refs.hotTableComponent.hotInstance
       hot.updateSettings({
-        cells:(row, col, prop)=>{
+        cells:(row, col, prop)=>{ 
           if (this.repeatHighlightsCell && this.repeatHighlightsCell.includes(prop)) {
             let cell = hot.getCell(row, col)
-            if (this.duplicatesDict[prop].includes(cell.innerHTML)) {
+            this.$nextTick(()=>{
+              cell.style.backgroundColor = ''
+            })
+            if (this.duplicatesDict[prop].includes(cell.innerHTML) && cell.innerHTML.trim() !== "") {
               this.$nextTick(()=>{
-                  cell.style.background = 'rgb(242,223,224)'
+                  cell.style.backgroundColor = 'rgb(242,223,224)'
               })
             }
           }
@@ -388,6 +394,7 @@ export default {
 </script>
 
 <style>
+
 
 .htContextMenu:not(.htGhostTable) {
   z-index: 9999 !important;
