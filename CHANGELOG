@@ -6,3 +6,5 @@ v1.0.4  增加手动触发表格刷新方法
 v1.0.5  支持渲染空数组，支持 highlights，repeatHighlightsCell， cellClickFlag， @cellClick API
 v1.0.6  update readme
 v1.0.7  fix 横向滚动动态样式失效
+v1.0.8  高亮支持 aliasList，unNumberList  API
+v1.0.9  支持 dropdownMenu高级菜单过滤， 批量替换，Delete快捷键删除行列， 阅读模式，删增列保持顺序不变，双击croosshair 以下空cell自动填充，表头重复验证
